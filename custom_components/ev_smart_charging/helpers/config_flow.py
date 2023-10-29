@@ -26,6 +26,7 @@ from ..const import (
     PLATFORM_NORDPOOL,
     PLATFORM_OCPP,
     PLATFORM_VW,
+    PLATFORM_ELCOST,
     SWITCH,
 )
 from .general import Validator
@@ -107,6 +108,10 @@ class FindEntity:
     def find_price_sensor(hass: HomeAssistant) -> str:
         """Search for price sensor"""
         sensor = ""
+        if len(sensor) == 0:
+            # we should look up ELCOST first as it has 'prority' over
+            # the actual price sensors
+            sensor = FindEntity.find_elcost_sensor(hass)
         if len(sensor) == 0:
             sensor = FindEntity.find_nordpool_sensor(hass)
         if len(sensor) == 0:
@@ -197,6 +202,17 @@ class FindEntity:
                         return entity_id
         return ""
 
+    @staticmethod
+    def find_elcost_sensor(hass: HomeAssistant) -> str:
+        """Find Nordpool sensor"""
+        entity_registry: EntityRegistry = async_entity_registry_get(hass)
+        registry_entries: UserDict[
+            str, RegistryEntry
+        ] = entity_registry.entities.items()
+        for entry in registry_entries:
+            if entry[1].platform == PLATFORM_ELCOST:
+                return entry[1].entity_id
+        return ""
 
 class DeviceNameCreator:
     """Class that creates the name of the new device"""

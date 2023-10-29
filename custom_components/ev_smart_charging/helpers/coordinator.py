@@ -11,6 +11,7 @@ from custom_components.ev_smart_charging.const import (
     PLATFORM_ENERGIDATASERVICE,
     PLATFORM_ENTSOE,
     PLATFORM_NORDPOOL,
+    PLATFORM_ELCOST,
     READY_HOUR_NONE,
     START_HOUR_NONE,
 )
@@ -34,7 +35,7 @@ def convert_raw_item(
     #         tzinfo=zoneinfo.ZoneInfo(key='Europe/Stockholm')),
     #  'value': 145.77}
 
-    if platform == PLATFORM_NORDPOOL:
+    if platform in (PLATFORM_NORDPOOL, PLATFORM_ELCOST):
         if item["value"] is not None and isinstance(item["start"], datetime):
             return item
 

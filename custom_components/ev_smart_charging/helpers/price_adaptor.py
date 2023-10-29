@@ -14,6 +14,7 @@ from custom_components.ev_smart_charging.const import (
     PLATFORM_ENERGIDATASERVICE,
     PLATFORM_ENTSOE,
     PLATFORM_NORDPOOL,
+    PLATFORM_ELCOST,
     SENSOR,
 )
 from custom_components.ev_smart_charging.helpers.general import Validator, get_platform
@@ -40,6 +41,7 @@ class PriceAdaptor:
                 if self._price_platform in (
                     PLATFORM_NORDPOOL,
                     PLATFORM_ENERGIDATASERVICE,
+                    PLATFORM_ELCOST,
                 ):
                     try:
                         if not Validator.is_float(
@@ -64,7 +66,11 @@ class PriceAdaptor:
     def get_raw_today_local(self, state) -> Raw:
         """Get the today's prices in local timezone"""
 
-        if self._price_platform in (PLATFORM_NORDPOOL, PLATFORM_ENERGIDATASERVICE):
+        if self._price_platform in (
+                PLATFORM_NORDPOOL,
+                PLATFORM_ENERGIDATASERVICE,
+                PLATFORM_ELCOST,
+        ):
             return Raw(state.attributes["raw_today"], self._price_platform)
 
         if self._price_platform == PLATFORM_ENTSOE:
@@ -75,7 +81,11 @@ class PriceAdaptor:
     def get_raw_tomorrow_local(self, state) -> Raw:
         """Get the tomorrow's prices in local timezone"""
 
-        if self._price_platform in (PLATFORM_NORDPOOL, PLATFORM_ENERGIDATASERVICE):
+        if self._price_platform in (
+                PLATFORM_NORDPOOL,
+                PLATFORM_ENERGIDATASERVICE,
+                PLATFORM_ELCOST
+        ):
             return Raw(state.attributes["raw_tomorrow"], self._price_platform)
 
         if self._price_platform == PLATFORM_ENTSOE:
@@ -86,7 +96,11 @@ class PriceAdaptor:
     def get_current_price(self, state) -> float:
         """Return current price."""
 
-        if self._price_platform in (PLATFORM_NORDPOOL, PLATFORM_ENERGIDATASERVICE):
+        if self._price_platform in (
+                PLATFORM_NORDPOOL,
+                PLATFORM_ENERGIDATASERVICE,
+                PLATFORM_ELCOST
+        ):
             return state.attributes["current_price"]
 
         if self._price_platform == PLATFORM_ENTSOE:
@@ -114,7 +128,11 @@ class PriceAdaptor:
 
         price_platform = get_platform(hass, user_input[CONF_PRICE_SENSOR])
 
-        if price_platform in (PLATFORM_NORDPOOL, PLATFORM_ENERGIDATASERVICE):
+        if price_platform in (
+                PLATFORM_NORDPOOL,
+                PLATFORM_ENERGIDATASERVICE,
+                PLATFORM_ELCOST
+        ):
             if not "current_price" in price_state.attributes.keys():
                 _LOGGER.debug("No attribute current_price in price sensor")
                 return ("base", "sensor_is_not_price")
